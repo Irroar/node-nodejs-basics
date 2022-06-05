@@ -1,7 +1,7 @@
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { readdir, access } from 'fs/promises';
-import CustomFSError from './CustomError.js';
+import CustomFSError from './utils/CustomError.js';
 import { isExists } from './utils/exist.js';
 
 const __filename = fileURLToPath(import.meta.url);

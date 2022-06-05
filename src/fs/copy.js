@@ -1,7 +1,8 @@
 import { copyFile, mkdir, readdir } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import CustomFSError from './CustomError.js';
+import CustomFSError from './utils/CustomError.js';
+import { isExists } from './utils/exist.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,6 +12,13 @@ export const copy = async (subFolderName='') => {
   const pathToDestinationFolder = join(__dirname, 'files_copy', subFolderName);
 
   try {
+    const isSourceFolderExists = await isExists(pathToSourceFolder);
+    const isDestinationFolderExists = await isExists(pathToDestinationFolder);
+
+    if (!isSourceFolderExists || isDestinationFolderExists) { 
+      throw new CustomFSError('FS operation failed'); 
+    }
+
     await mkdir(pathToDestinationFolder);
     const fileDirents = await readdir(pathToSourceFolder, { withFileTypes: true });
 
@@ -25,11 +33,8 @@ export const copy = async (subFolderName='') => {
     }
 
   } catch(err) {
-    if (err.code === 'ENOENT' || err.code === 'EEXIST') { 
-      throw new CustomFSError('FS operation failed'); 
-    }
+    console.log(err);
   }
-
 
 };
 
