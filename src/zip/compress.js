@@ -3,11 +3,13 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { pipeline } from 'stream';
 import { createReadStream, createWriteStream } from 'fs';
+import { promisify } from 'util';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const compress = async () => {
+  const pipe = promisify(pipeline);
   const sourceName = 'fileToCompress.txt';
   const pathToSource = join(__dirname, 'files', sourceName);
 
@@ -19,9 +21,11 @@ export const compress = async () => {
 
   const gzipTransformStream = createGzip();
   
-  pipeline(sourseReadStream, gzipTransformStream, destinationWriteStream, (err) => { 
-    if (err) { console.log(err); }
-  });
+  try {
+    await pipe(sourseReadStream, gzipTransformStream, destinationWriteStream);
+  } catch(err) {
+    console.log(err);
+  }
 
 };
 
