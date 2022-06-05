@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 
 export const create = async () => {
   const fileName = 'fresh.txt';
-  const pathToFile = join(__dirname, fileName);
+  const pathToFile = join(__dirname, 'files', fileName);
   const content = 'I am fresh and young';
 
   try {
